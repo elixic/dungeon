@@ -1,0 +1,7 @@
+{
+  "name": "dungeon",
+  "version": "0.0.1",
+  "dependencies": {
+    "npmlog": "0.0.6"
+  }
+}
