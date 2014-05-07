@@ -7,11 +7,7 @@ function startServer(route, routes) {
     var pathname = url.parse(request.url).pathname;
     log.info("http","Request received for: " + pathname); 
 
-    route(routes,pathname); 
-
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write("This game sucks");
-    response.end(); 
+    route(routes, pathname, response); 
   }
 
   http.createServer(onRequest).listen(8888);
