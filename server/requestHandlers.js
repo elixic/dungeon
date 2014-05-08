@@ -1,9 +1,9 @@
 var log = require("./logging")
 
-function roomMap(response) {
+exports.roomMap = function roomMap(req, res) {
   log.info("handlers","roomMap called");
   
-  response.writeHead(200, {"Content-Type": "application/json"});
+  res.writeHead(200, {"Content-Type": "application/json"});
   
   // TODO: This is hardcoded...it obviously shouldn't be
   var map = ["###################################",
@@ -18,17 +18,14 @@ function roomMap(response) {
              "###################################"];
     
   //response.setEncoding('utf8');
-  response.write(JSON.stringify(map));
-  response.end(); 
-}
+  res.write(JSON.stringify(map));
+  res.end(); 
+};
 
-function playerLogin(response) {
-  log.info("handlers","playerLogin called"); 
+exports.login = function login(req, res) {
+  log.info("handlers","login called"); 
   
-  response.writeHead(200, {"Content-Type": "text/plain"});
-  response.write("This game sucks, but you did call playerLogin");
-  response.end(); 
-}
-
-exports.roomMap = roomMap; 
-exports.playerLogin = playerLogin;
+  res.writeHead(200, {"Content-Type": "text/plain"});
+  res.write("This game sucks, but you did call playerLogin");
+  res.end(); 
+};

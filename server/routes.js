@@ -1,7 +1,9 @@
-var requestHandlers = require("./requestHandlers"); 
+var log = require("./logging");
+var handlers = require("./requestHandlers");
 
-var routes = {}
-routes["/roomMap"] = requestHandlers.roomMap; 
-routes["/playerLogin"] = requestHandlers.playerLogin;
+module.exports = function(httpserv){
 
-module.exports = routes;
+  httpserv.get('/roomMap', handlers.roomMap);
+  httpserv.get('/login', handlers.login);
+  
+}

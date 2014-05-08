@@ -1,17 +1,15 @@
 var log = require("./logging"); 
-var http = require("http"); 
-var url = require("url"); 
+var express = require("express");
 
-function startServer(route, routes) {
-  function onRequest(request, response) {
-    var pathname = url.parse(request.url).pathname;
-    log.info("http","Request received for: " + pathname); 
+var http = express(); 
 
-    route(routes, pathname, response); 
-  }
+// bring in the routes
+require("./routes")(http);
 
-  http.createServer(onRequest).listen(8888);
-  log.info("http","Server is listening...");
+function startServer() {
+  http.listen(8888, function() {
+    log.info("http","Server is listening...");
+  });
 }
 
 exports.startServer = startServer;
