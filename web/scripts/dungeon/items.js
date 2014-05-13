@@ -148,24 +148,27 @@ define(['util/util'], function(util) {
             }
         }];
 
-    return {
-        getRandomItem: function() {
-            if (normal_item_types && normal_item_types.length > 0) {
-                var item_index = util.getRandomNumberBetween(0, normal_item_types.length);
-                return normal_item_types[item_index];
-            }
-
-            return undefined;
-        },
-
-        getRandomRareItem: function() {
-            if (rare_item_types && rare_item_types.length > 0)
-            {
-                var item_index = util.getRandomNumberBetween(0, rare_item_types.length);
-                return rare_item_types[item_index];
-            }
-
-            return undefined;
+    function getRandomItem() {
+        if (normal_item_types && normal_item_types.length > 0) {
+            var item_index = util.getRandomNumberBetween(0, normal_item_types.length);
+            return normal_item_types[item_index];
         }
+
+        return undefined;
+    };
+
+    function getRandomRareItem() {
+        if (rare_item_types && rare_item_types.length > 0)
+        {
+            var item_index = util.getRandomNumberBetween(0, rare_item_types.length);
+            return rare_item_types[item_index];
+        }
+
+        return undefined;
+    };
+
+    return {
+        getRandomItem: getRandomItem,
+        getRandomRareItem: getRandomRareItem
     };
 });
