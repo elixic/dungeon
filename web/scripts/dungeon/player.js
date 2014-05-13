@@ -89,6 +89,10 @@ define(['util/util'], function(util){
         player.keys--;
     };
 
+    function keyCount() {
+        return player.keys;
+    }
+
     function setName(name) {
         player.name = name;
     };
@@ -126,6 +130,7 @@ define(['util/util'], function(util){
         getGold: getGold,
         addKey: addKey,
         hasKey: hasKey,
-        useKey: useKey
+        useKey: useKey,
+        keyCount: keyCount
     };
 });

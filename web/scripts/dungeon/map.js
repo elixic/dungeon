@@ -55,7 +55,7 @@ define(['util/util'], function(util) {
         for(var i = 0; i < map.players.length; i++) {
             var p = map.players[i],
                 tile = currentMap[p.y].charAt(p.x);
-            currentMap[p.y] = util.stringReplace(currentMap[p.y], tile, p.icon, p.x - 1, p.x + 1);
+            currentMap[p.y] = currentMap[p.y].substring(0, p.x) + p.icon + currentMap[p.y].substring(p.x+1);
         }
 
         return currentMap;
@@ -84,6 +84,8 @@ define(['util/util'], function(util) {
             row = util.stringReplace(row, tile, ".", posx - 1, posx + 1);
             map.data[posy] = row;
         }
+
+        return item;
     };
 
     function loadMap() {
@@ -110,8 +112,9 @@ define(['util/util'], function(util) {
         }
 
         if (index >= 0) {
-            map.players[i].x = x;
-            map.players[i].y = y;
+            map.players[index].x = x;
+            map.players[index].y = y;
+            console.log(map.players[index]);
         } else {
             map.players.push({
                 icon: playerIcon,
@@ -127,25 +130,19 @@ define(['util/util'], function(util) {
         if (boundsCheck(x, y)) {
             var tile = getTileAt(x, y);
             if (tile === map.wall) {
-                return { message: "wall in the way", success: false };
+                return { message: "wall", success: false };
             } else if (tile === map.closedDoor && !hasKey) {
-                return { message: "door locked", success: false };
+                return { message: "door", success: false };
             } else {
-                return { message: "move success", success: true };
+                return { message: "success", success: true };
             }
         }
 
-        return { message: "out of bounds", success: false };
+        return { message: "bounds", success: false };
     };
 
     function boundsCheck(x, y) {
-        console.log({
-            x: x,
-            y: y
-        });
-
         if (y < map.data.length) {
-            console.log(map.data[y]);
             return map.data[y].length > x;
         }
 

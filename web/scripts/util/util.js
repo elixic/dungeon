@@ -20,10 +20,7 @@ define([], function() {
 
         middle = middle.replace(pattern, replacement);
 
-        console.log(front);
-        console.log(middle);
-        console.log(tail);
-
+        console.log(front + " " + middle + " " + tail);
         return front + middle + tail;
     };
 

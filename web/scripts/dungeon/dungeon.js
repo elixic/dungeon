@@ -5,7 +5,13 @@ define(['./map', './items', './player'], function(map, items, player) {
         footer;
 
     function drawHeader(player, header) {
-        header.innerHTML = "<span>name: " + player.getName() + " gold: " + player.getGold() + "</span>"
+        header.innerHTML = "<span>name: ";
+        header.innerHTML += player.getName();
+        header.innerHTML += " gold: ";
+        header.innerHTML += player.getGold();
+        header.innerHTML += " keys: ";
+        header.innerHTML += player.keyCount();
+        header.innerHTML += "</span>";
     }
 
     function drawFooter(player, footer) {
@@ -45,6 +51,7 @@ define(['./map', './items', './player'], function(map, items, player) {
 
     function movePlayer(map, player, item, x, y) {
         player.setPosition(x, y);
+        console.log(player.getPosition());
 
         if (item) {
             player.addGold(item.gold);
@@ -85,6 +92,16 @@ define(['./map', './items', './player'], function(map, items, player) {
         }
 
         movement = map.movePlayer(false, player.getIcon(), newx, newy);
+
+
+        if (!movement.success && movement.message === "door") {
+            if (player.hasKey()) {
+                movement = map.movePlayer(true, player.getIcon(), newx, newy);
+                if (movement.success) {
+                    player.useKey();
+                }
+            }
+        }
 
         if (movement.success) {
             console.log(movement);
