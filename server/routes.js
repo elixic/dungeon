@@ -6,4 +6,4 @@ module.exports = function(httpserv){
   httpserv.get('/roomMap', handlers.roomMap);
   httpserv.get('/login', handlers.login);
   
-}
+};
