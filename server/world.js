@@ -1,18 +1,25 @@
 var log = require("./logging"); 
 var events = require("events");
 
-
+// private/configuration variables for the World class
+// CONFIGURATION
 var worldTickDelay = 1000; // number of milliseconds between world ticks
 
+// PRIVATE VARIABLES
 var eventEmitter = new events.EventEmitter(); // main event handler
 
-module.exports.init = function init() {
+function World() {
+  // TODO: set up base event handlers
+}
+
+
+World.prototype.init = function() {
   log.info('world',"Starting up the world...");
   
   
 };
 
-module.exports.run = function run() {
+World.prototype.run = function() {
   log.info('world',"Entering main world event loop...");
   
   var interval = setInterval( function() {
@@ -22,3 +29,12 @@ module.exports.run = function run() {
       
   }, worldTickDelay);    
 };
+
+// export the world class creator function
+module.exports = createWorld;
+
+function createWorld() {
+  var world = new World();
+  
+  return world;
+}
