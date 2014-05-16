@@ -7,7 +7,8 @@ theWorld = world();
 theWorld.init();
 
 // start the HTTP server
-httpServer.startServer(); 
+theServer = httpServer(theWorld);
+theServer.startServer(); 
 log.info('server', 'http server kicked off');
 
 
