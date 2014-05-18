@@ -1,6 +1,8 @@
 var log = require("./logging"); 
 var events = require("events");
 
+var theWorld = createWorld(); 
+
 // private/configuration variables for the World class
 // CONFIGURATION
 var worldTickDelay = 1000; // number of milliseconds between world ticks
@@ -31,10 +33,12 @@ World.prototype.run = function() {
 };
 
 // export the world class creator function
-module.exports = createWorld;
+module.exports = theWorld;
 
 function createWorld() {
   var world = new World();
+
+  world.init();
   
   return world;
 }

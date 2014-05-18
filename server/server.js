@@ -1,10 +1,6 @@
 var log = require("./logging"); 
 var httpServer = require("./http"); 
-var world = require("./world");
-
-// initailize the world
-theWorld = world(); 
-theWorld.init();
+var theWorld = require("./world");
 
 // start the HTTP server
 theServer = httpServer(theWorld);
