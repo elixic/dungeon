@@ -6,6 +6,7 @@
                 font-family: monospace;
             }
         </style>
+        <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
         <div id="header"></div>
@@ -13,5 +14,12 @@
         <div id="footer"></div>
         
         <script data-main="scripts/app" src="scripts/require.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8888');
+            socket.on('', function(data) {
+                console.log(data);
+                socket.emit('event2', { data: 'get this!'});
+            });
+        </script>
     </body>
 </html>
