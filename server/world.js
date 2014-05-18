@@ -1,7 +1,6 @@
 var log = require("./logging"); 
 var events = require("events");
 
-var theWorld = createWorld(); 
 
 // private/configuration variables for the World class
 // CONFIGURATION
@@ -32,8 +31,6 @@ World.prototype.run = function() {
   }, worldTickDelay);    
 };
 
-// export the world class creator function
-module.exports = theWorld;
 
 function createWorld() {
   var world = new World();
@@ -42,3 +39,5 @@ function createWorld() {
   
   return world;
 }
+
+module.exports = createWorld();
