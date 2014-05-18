@@ -10,7 +10,7 @@ function HTTPServer(world) {
 
   // hook up socket.io...
   // TODO: when we move to Express v4 we need to update how we hook up express
-  this.legacyServer = require('http').createServer(express);
+  this.legacyServer = require('http').createServer(this.http);
   this.io = socketio.listen(this.legacyServer);
 
   // initialize middleware to support sessions
@@ -30,7 +30,7 @@ HTTPServer.prototype.startServer = function() {
   });
 
 
-  this.http.listen(8888, function() {
+  this.legacyServer.listen(8888, function() {
     log.info("http","Server is listening...");
   });
 };
