@@ -1,21 +1,10 @@
-define(['util/util'], function(util) {
+define(['jquery', 'util/util'], function($, util) {
     var map = {
             wall: '#',
             floor: '.',
             closedDoor: '*',
             openDoor: '+',
-            data: [
-                "###################################",
-                "#.#k#........*..........#.......g.#",
-                "#...#..i.....#.......i..#..k......#",
-                "#...#........#.k........#.........#",
-                "#.#.#........#..........#.........*",
-                "#...#.G...k..#..........#.........#",
-                "#...################*#######*######",
-                "#.#.*.............................#",
-                "#...#......k.............g........#",
-                "###################################"
-            ],
+            data: [],
             players: []
         },
         ground_item_types = [
@@ -88,8 +77,13 @@ define(['util/util'], function(util) {
         return item;
     };
 
-    function loadMap() {
-        // todo: get map from the server
+    function loadMapData(level) {
+        return new Promise(function(resolve, fail) {
+            $.get('roomMap', {}).done(function(data) {
+                map.data = data;
+                resolve();
+            });
+        });
     };
 
     function movePlayer(hasKey, playerIcon, x, y) {
@@ -159,7 +153,7 @@ define(['util/util'], function(util) {
 
     return {
         getCurrentMap: getCurrentMap,
-        loadMap: loadMap,
+        loadMap: loadMapData,
         movePlayer: movePlayer,
         getTileAt: getTileAt,
         boundsCheck: boundsCheck

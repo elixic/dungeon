@@ -121,25 +121,25 @@ define(['./map', './items', './player'], function(map, items, player) {
         }
     }
 
-
-
     function initialize() {
         console.log('initialize...');
         dungeon = document.getElementById('dungeon');
         header = document.getElementById('header');
         footer = document.getElementById('footer');
         player.setPosition(1,1);
-        map.movePlayer(false, player.getIcon(), 1, 1);
 
         header.innerHTML = "<span>Header Player Name and Stuff</span>";
         dungeon.innerHTML = "<span>Draw Dungeon Here</span>";
         footer.innerHTML = "<span>Footer Inventory and Stuff</span>";
 
-        document.onkeydown = keypress
+        document.onkeydown = keypress;
 
-        drawHeader(player, header);
-        drawFooter(player, footer);
-        drawDungeon(map.getCurrentMap(), dungeon);
+        map.loadMap(0).done(function() {
+            map.movePlayer(false, player.getIcon(), 1, 1);
+            drawHeader(player, header);
+            drawFooter(player, footer);
+            drawDungeon(map.getCurrentMap(), dungeon);
+        });
     };
 
     return {
