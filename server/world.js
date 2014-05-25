@@ -11,6 +11,8 @@ var eventEmitter = new events.EventEmitter(); // main event handler
 
 function World() {
   // TODO: set up base event handlers
+
+  this.userList = [];
 }
 
 
@@ -24,11 +26,20 @@ World.prototype.run = function() {
   log.info('world',"Entering main world event loop...");
   
   var interval = setInterval( function() {
-      log.verbose('world','World tick happening at ' + Date.now());
+//      log.verbose('world','World tick happening at ' + Date.now());
       
       eventEmitter.emit('worldTick');
       
   }, worldTickDelay);    
+};
+
+World.prototype.addPerson = function(username,socket) {
+  var user = {};
+
+  user.username = username;
+  user.socket = socket;
+
+  this.userList.push(user);
 };
 
 

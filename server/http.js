@@ -29,6 +29,7 @@ HTTPServer.prototype.startServer = function() {
   this.io.sockets.on('connection', function(socket) {
     log.info("io","connection established with: " + socket);
 
+    socket.set('username','jimbob');
     socketHandlers.mapIncomingClient(socket);
   });
 
