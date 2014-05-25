@@ -121,12 +121,13 @@ define(['./map', './items', './player'], function(map, items, player) {
         }
     }
 
-    function initialize() {
+    function initialize(io) {
         console.log('initialize...');
         dungeon = document.getElementById('dungeon');
         header = document.getElementById('header');
         footer = document.getElementById('footer');
         player.setPosition(1,1);
+        map.init(io);
 
         header.innerHTML = "<span>Header Player Name and Stuff</span>";
         dungeon.innerHTML = "<span>Draw Dungeon Here</span>";

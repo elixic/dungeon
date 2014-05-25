@@ -27,8 +27,8 @@ HTTPServer.prototype.startServer = function() {
   // route handlers are
   this.io.sockets.on('connection', function(socket) {
     log.info("io","connection established with: " + socket);
-      socket.on('client-message', function(data){
-         log.info(data);
+      socket.on('move-player', function(data){
+         log.info(JSON.stringify(data));
       });
   });
 

@@ -86,9 +86,18 @@ define(['jquery', 'util/util'], function($, util) {
         });
     };
 
+    function init(io) {
+        map.io = io;
+    };
+
     function movePlayer(hasKey, playerIcon, x, y) {
         var canMove = canTileBeMovedOver(hasKey, x, y);
         if (canMove.success) {
+            map.io.emit('move-player', {
+                icon: playerIcon,
+                x: x,
+                y: y
+            });
             updatePlayerLocation(playerIcon, x, y);
             canMove.item = lookForItem(x, y);
         }
@@ -116,8 +125,6 @@ define(['jquery', 'util/util'], function($, util) {
                 y: y
             });
         }
-
-
     };
 
     function canTileBeMovedOver(hasKey, x, y) {
@@ -156,6 +163,7 @@ define(['jquery', 'util/util'], function($, util) {
         loadMap: loadMapData,
         movePlayer: movePlayer,
         getTileAt: getTileAt,
-        boundsCheck: boundsCheck
+        boundsCheck: boundsCheck,
+        init: init
     }
 })
