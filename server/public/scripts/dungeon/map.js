@@ -102,12 +102,13 @@ define(['jquery', 'util/util'], function($, util) {
                     x: x,
                     y: y
                 });
-                map.io.on('move-player', function() {
+                map.io.on('player-moved', function() {
                     updatePlayerLocation(playerIcon, x, y);
                     canMove.item = lookForItem(x, y);
                     resolve(canMove);
                 });
             } else {
+                console.log('failed...');
                 fail(canMove);
             }
         })

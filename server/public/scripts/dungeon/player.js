@@ -82,6 +82,7 @@ define(['util/util'], function(util){
     };
 
     function useKey() {
+        console.log('trying to use key');
         if (player.keys <= 0) {
             return false;
         }

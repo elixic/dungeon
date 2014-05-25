@@ -96,7 +96,9 @@ define(['./map', './items', './player'], function(map, items, player) {
         movement
             .then(function(canMove){
                 console.log(canMove);
-                movePlayer(map, player, movement.item, newx, newy);
+                movePlayer(map, player, canMove.item, newx, newy);
+            },function(canMove){
+                console.log(canMove);
             });
     }
 
