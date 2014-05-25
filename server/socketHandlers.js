@@ -6,9 +6,32 @@ function removePlayer(username) {
   theWorld.removePerson(username);
 }
 
+function updateMap(socket) {
+  // TODO: This is hardcoded...it obviously shouldn't be
+  var map = ["###################################",
+    "#.#k#........*..........#.......g.#",
+    "#...#..i.....#.......i..#..k......#",
+    "#...#........#.k........#.........#",
+    "#.#.#........#..........#.........*",
+    "#...#.G...k..#..........#.........#",
+    "#...################*#######*######",
+    "#.#.*.............................#",
+    "#...#......k.............g........#",
+    "###################################"];
+
+  socket.emit('update-map',JSON.stringify(map));
+}
+
+function movePlayer(socket,moveData) {
+
+  socket.emit('player-moved', moveData);
+}
+
 exports.mapIncomingClient = function(client) {
 
-  // login
+  // login - logs in the user, fn is used as a way to acknoledge the
+  // message and specify whether or not the user is authenticated to
+  // the client
   client.on('client-login', function(data, fn) {
 
     log.verbose('socketHandlers','login called');
@@ -19,6 +42,17 @@ exports.mapIncomingClient = function(client) {
       client.set('username',data.username);
 
       fn('success');
+
+      // user is logged in, now send them the updated map and player
+      // location
+      var initialLocation = {};
+
+      initialLocation.x = 1;
+      initialLocation.y = 1;
+      initialLocation.icon = 'P';
+
+      updateMap(client);
+      movePlayer(client,initialLocation);
     }else {
       fn('failure');
     }
@@ -29,7 +63,7 @@ exports.mapIncomingClient = function(client) {
   client.on('move-player', function(data) {
     log.verbose('socketHandlers','room move received');
 
-    client.emit('player-moved', data);
+    movePlayer(client,data);
   });
 
   // now that we're actually tracking this person as being "logged in" we need

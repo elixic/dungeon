@@ -42,6 +42,10 @@ World.prototype.addPerson = function(username,socket) {
   this.userList.push(user);
 };
 
+World.prototype.removePerson = function(username) {
+
+};
+
 
 function createWorld() {
   var world = new World();
