@@ -5,7 +5,8 @@ define(['jquery', 'util/util'], function($, util) {
             closedDoor: '*',
             openDoor: '+',
             data: [],
-            players: []
+            players: [],
+            moveCallback: null
         },
         ground_item_types = [
             {
@@ -33,7 +34,16 @@ define(['jquery', 'util/util'], function($, util) {
                 sprite: 'I',
                 type: 'random-rare-item',
                 description: 'a rare item that must be identified'
-            }];
+            }],
+        mapObject = {
+            getCurrentMap: getCurrentMap,
+            loadMap: loadMapData,
+            movePlayer: movePlayer,
+            getTileAt: getTileAt,
+            boundsCheck: boundsCheck,
+            moveCallback: setMoveCallback,
+            init: init
+        };
 
     function getCurrentMap() {
         var currentMap = [];
@@ -94,26 +104,25 @@ define(['jquery', 'util/util'], function($, util) {
     };
 
     function movePlayer(useKey, playerIcon, x, y) {
-        return new Promise(function(resolve, fail){
-            var canMove = canTileBeMovedOver(useKey, x, y);
-            if (canMove.success) {
-                map.io.emit('move-player', {
-                    icon: playerIcon,
-                    x: x,
-                    y: y
-                });
-                map.io.on('player-moved', function() {
-                    updatePlayerLocation(playerIcon, x, y);
-                    canMove.item = lookForItem(x, y);
-                    resolve(canMove);
-                });
-            } else {
-                console.log('failed...');
-                fail(canMove);
-            }
-        })
+        var canMove = canTileBeMovedOver(useKey, x, y),
+            callMoveCallback = function(icon, x, y) {
+                updatePlayerLocation(playerIcon, x, y);
+                canMove.item = lookForItem(x, y);
+                map.moveCallback(mapObject, canMove.item, x, y);
+            };
 
-        //return canMove;
+        if (canMove.success) {
+            map.io.emit('move-player', {
+                icon: playerIcon,
+                x: x,
+                y: y
+            });
+            map.io.on('player-moved', function(data) {
+                callMoveCallback(data.icon, data.x, data.y);
+            });
+        } else {
+            console.log(canMove);
+        }
     };
 
     function updatePlayerLocation(playerIcon, x, y) {
@@ -128,7 +137,6 @@ define(['jquery', 'util/util'], function($, util) {
         if (index >= 0) {
             map.players[index].x = x;
             map.players[index].y = y;
-            console.log(map.players[index]);
         } else {
             map.players.push({
                 icon: playerIcon,
@@ -169,12 +177,9 @@ define(['jquery', 'util/util'], function($, util) {
         return undefined;
     };
 
-    return {
-        getCurrentMap: getCurrentMap,
-        loadMap: loadMapData,
-        movePlayer: movePlayer,
-        getTileAt: getTileAt,
-        boundsCheck: boundsCheck,
-        init: init
-    }
+    function setMoveCallback(callback) {
+        map.moveCallback = callback;
+    };
+
+    return mapObject;
 })

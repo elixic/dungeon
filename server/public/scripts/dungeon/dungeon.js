@@ -49,9 +49,8 @@ define(['./map', './items', './player'], function(map, items, player) {
         return code === 87 || code === 83 || code === 68 || code === 65;
     }
 
-    function movePlayer(map, player, item, x, y) {
+    function movePlayer(map, item, x, y) {
         player.setPosition(x, y);
-        console.log(player.getPosition());
 
         if (item) {
             player.addGold(item.gold);
@@ -91,20 +90,11 @@ define(['./map', './items', './player'], function(map, items, player) {
             newx = newx + 1;
         }
 
-        movement = map.movePlayer(player.useKey, player.getIcon(), newx, newy);
-
-        movement
-            .then(function(canMove){
-                console.log(canMove);
-                movePlayer(map, player, canMove.item, newx, newy);
-            },function(canMove){
-                console.log(canMove);
-            });
+        map.movePlayer(player.useKey, player.getIcon(), newx, newy);
     }
 
     function keypress(event) {
         var keyCode = event.keyCode;
-        console.log(event.keyCode);
 
         if (isMovementKey(keyCode)) {
             characterMovement(map, player, keyCode);
@@ -118,6 +108,7 @@ define(['./map', './items', './player'], function(map, items, player) {
         footer = document.getElementById('footer');
         player.setPosition(1,1);
         map.init(io);
+        map.moveCallback(movePlayer);
 
         header.innerHTML = "<span>Header Player Name and Stuff</span>";
         dungeon.innerHTML = "<span>Draw Dungeon Here</span>";
