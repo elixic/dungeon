@@ -88,21 +88,31 @@ define(['jquery', 'util/util'], function($, util) {
 
     function init(io) {
         map.io = io;
+        io.on('move-player', function(data) {
+            updatePlayerLocation(data.icon, data.x, data.y);
+        });
     };
 
-    function movePlayer(hasKey, playerIcon, x, y) {
-        var canMove = canTileBeMovedOver(hasKey, x, y);
-        if (canMove.success) {
-            map.io.emit('move-player', {
-                icon: playerIcon,
-                x: x,
-                y: y
-            });
-            updatePlayerLocation(playerIcon, x, y);
-            canMove.item = lookForItem(x, y);
-        }
+    function movePlayer(useKey, playerIcon, x, y) {
+        return new Promise(function(resolve, fail){
+            var canMove = canTileBeMovedOver(useKey, x, y);
+            if (canMove.success) {
+                map.io.emit('move-player', {
+                    icon: playerIcon,
+                    x: x,
+                    y: y
+                });
+                map.io.on('move-player', function() {
+                    updatePlayerLocation(playerIcon, x, y);
+                    canMove.item = lookForItem(x, y);
+                    resolve(canMove);
+                });
+            } else {
+                fail(canMove);
+            }
+        })
 
-        return canMove;
+        //return canMove;
     };
 
     function updatePlayerLocation(playerIcon, x, y) {
@@ -127,12 +137,12 @@ define(['jquery', 'util/util'], function($, util) {
         }
     };
 
-    function canTileBeMovedOver(hasKey, x, y) {
+    function canTileBeMovedOver(useKey, x, y) {
         if (boundsCheck(x, y)) {
             var tile = getTileAt(x, y);
             if (tile === map.wall) {
                 return { message: "wall", success: false };
-            } else if (tile === map.closedDoor && !hasKey) {
+            } else if (tile === map.closedDoor && !useKey()) {
                 return { message: "door", success: false };
             } else {
                 return { message: "success", success: true };

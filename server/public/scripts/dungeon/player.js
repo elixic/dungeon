@@ -83,10 +83,11 @@ define(['util/util'], function(util){
 
     function useKey() {
         if (player.keys <= 0) {
-            throw Error('no keys left to use.');
+            return false;
         }
 
         player.keys--;
+        return true;
     };
 
     function keyCount() {

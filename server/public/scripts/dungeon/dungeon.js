@@ -91,25 +91,13 @@ define(['./map', './items', './player'], function(map, items, player) {
             newx = newx + 1;
         }
 
-        movement = map.movePlayer(false, player.getIcon(), newx, newy);
+        movement = map.movePlayer(player.useKey, player.getIcon(), newx, newy);
 
-
-        if (!movement.success && movement.message === "door") {
-            if (player.hasKey()) {
-                movement = map.movePlayer(true, player.getIcon(), newx, newy);
-                if (movement.success) {
-                    player.useKey();
-                }
-            }
-        }
-
-        if (movement.success) {
-            console.log(movement);
-            movePlayer(map, player, movement.item, newx, newy);
-        } else {
-            console.log(movement);
-            // todo: add something to give the user a message about why movement didn't work?
-        }
+        movement
+            .then(function(canMove){
+                console.log(canMove);
+                movePlayer(map, player, movement.item, newx, newy);
+            });
     }
 
     function keypress(event) {
