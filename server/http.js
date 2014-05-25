@@ -1,6 +1,7 @@
 var log = require("./logging"); 
 var express = require("express");
 var socketio = require('socket.io');
+var socketHandlers = require("./socketHandlers");
 
 
 
@@ -27,9 +28,8 @@ HTTPServer.prototype.startServer = function() {
   // route handlers are
   this.io.sockets.on('connection', function(socket) {
     log.info("io","connection established with: " + socket);
-      socket.on('move-player', function(data){
-         log.info(JSON.stringify(data));
-      });
+
+    socketHandlers.mapIncomingClient(socket);
   });
 
 
