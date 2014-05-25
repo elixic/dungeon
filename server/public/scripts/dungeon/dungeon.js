@@ -1,4 +1,4 @@
-define(['./map', './items', './player'], function(map, items, player) {
+define(['./map', './items', './player', 'amplify'], function(map, items, player, amplify) {
 
     var dungeon,
         header,
@@ -108,7 +108,10 @@ define(['./map', './items', './player'], function(map, items, player) {
         footer = document.getElementById('footer');
         player.setPosition(1,1);
         map.init(io);
-        map.moveCallback(movePlayer);
+        amplify.subscribe('map-dirty', function(message) {
+            movePlayer(message.map, message.item, message.x, message.y);
+        });
+        //map.moveCallback(movePlayer);
 
         header.innerHTML = "<span>Header Player Name and Stuff</span>";
         dungeon.innerHTML = "<span>Draw Dungeon Here</span>";

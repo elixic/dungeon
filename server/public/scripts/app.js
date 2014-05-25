@@ -3,21 +3,23 @@ require.config({
     paths: {
         jquery: 'lib/jquery-2.1.1.min',
         socketio: '../socket.io/socket.io',
-        bullhorn: 'lib/bullhorn-min'
+        amplify: 'lib/amplify.min'
     },
     shim: {
+        'jquery': {
+            exports: '$'
+        },
         'socketio': {
             exports: 'io'
         },
-        'bullhorn': {
-            exports: 'ChannelFactory'
+        'amplify': {
+            deps: ['jquery'],
+            exports: 'amplify'
         }
     }
 });
 
-require(['socketio', 'dungeon/dungeon', 'bullhorn'], function(io, dungeon, Factory) {
-    console.log(Factory);
-    console.log(io);
+require(['socketio', 'dungeon/dungeon', 'amplify'], function(io, dungeon) {
     var io = io.connect('http://localhost:8888');
     dungeon.init(io);
 });

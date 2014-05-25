@@ -1,12 +1,11 @@
-define(['jquery', 'util/util'], function($, util) {
+define(['jquery', 'util/util', 'amplify'], function($, util, amplify) {
     var map = {
             wall: '#',
             floor: '.',
             closedDoor: '*',
             openDoor: '+',
             data: [],
-            players: [],
-            moveCallback: null
+            players: []
         },
         ground_item_types = [
             {
@@ -41,7 +40,6 @@ define(['jquery', 'util/util'], function($, util) {
             movePlayer: movePlayer,
             getTileAt: getTileAt,
             boundsCheck: boundsCheck,
-            moveCallback: setMoveCallback,
             init: init
         };
 
@@ -97,28 +95,31 @@ define(['jquery', 'util/util'], function($, util) {
     };
 
     function init(io) {
+        var publishMapDirtyMessage = function(icon, x, y) {
+            var item = lookForItem(x,y);
+            updatePlayerLocation(icon, x, y);
+            amplify.publish('map-dirty', {
+                map: mapObject,
+                item: item,
+                x: x,
+                y: y
+            });
+        };
+
         map.io = io;
-        io.on('move-player', function(data) {
-            updatePlayerLocation(data.icon, data.x, data.y);
+        io.on('player-moved', function(data) {
+            publishMapDirtyMessage(data.icon, data.x, data.y);
         });
     };
 
     function movePlayer(useKey, playerIcon, x, y) {
-        var canMove = canTileBeMovedOver(useKey, x, y),
-            callMoveCallback = function(icon, x, y) {
-                updatePlayerLocation(playerIcon, x, y);
-                canMove.item = lookForItem(x, y);
-                map.moveCallback(mapObject, canMove.item, x, y);
-            };
+        var canMove = canTileBeMovedOver(useKey, x, y);
 
         if (canMove.success) {
             map.io.emit('move-player', {
                 icon: playerIcon,
                 x: x,
                 y: y
-            });
-            map.io.on('player-moved', function(data) {
-                callMoveCallback(data.icon, data.x, data.y);
             });
         } else {
             console.log(canMove);
@@ -175,10 +176,6 @@ define(['jquery', 'util/util'], function($, util) {
         }
 
         return undefined;
-    };
-
-    function setMoveCallback(callback) {
-        map.moveCallback = callback;
     };
 
     return mapObject;
