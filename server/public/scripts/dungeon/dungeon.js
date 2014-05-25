@@ -2,7 +2,10 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
 
     var dungeon,
         header,
-        footer;
+        footer,
+        dungetonObject = {
+            init: initialize
+        };
 
     function drawHeader(player, header) {
         header.innerHTML = "<span>name: ";
@@ -101,11 +104,37 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
         }
     }
 
+    function doLogin(io, username, password) {
+        var auth = {
+            username: username,
+            password: password
+        };
+
+        console.log('emitting login message');
+        console.log(auth);
+
+        io.emit('client-login', auth, function(data){
+            console.log(data);
+        });
+    }
+
+    function setupLogin(io) {
+        var loginButton = document.getElementById('loginButton'),
+            username = document.getElementById('username'),
+            password = document.getElementById('password'),
+            login = document.getElementById('login');
+
+        loginButton.onclick = function() {
+            doLogin(io, username.value, password.value);
+        };
+    }
+
     function initialize(io) {
-        console.log('initialize...');
         dungeon = document.getElementById('dungeon');
         header = document.getElementById('header');
         footer = document.getElementById('footer');
+
+        setupLogin(io);
         player.setPosition(1,1);
         map.init(io);
         amplify.subscribe('map-dirty', function(message) {
@@ -125,10 +154,8 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
             drawFooter(player, footer);
             drawDungeon(map.getCurrentMap(), dungeon);
         });
-    };
+    }
 
-    return {
-        init: initialize
-    };
+    return dungetonObject;
 
 });
