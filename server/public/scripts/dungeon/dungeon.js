@@ -3,7 +3,7 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
     var dungeon,
         header,
         footer,
-        dungetonObject = {
+        dungeonObject = {
             init: initialize
         };
 
@@ -135,7 +135,8 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
         footer = document.getElementById('footer');
 
         setupLogin(io);
-        player.setPosition(1,1);
+        player.init(io);
+        //player.setPosition(1,1);
         map.init(io);
         amplify.subscribe('map-dirty', function(message) {
             movePlayer(message.map, message.item, message.x, message.y);
@@ -156,6 +157,6 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
         });
     }
 
-    return dungetonObject;
+    return dungeonObject;
 
 });
