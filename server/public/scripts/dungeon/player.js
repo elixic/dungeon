@@ -1,6 +1,6 @@
 define(['util/util'], function(util){
     var player = {
-        playerChar: 'P',
+        icon: 'P',
         x: 0,
         y: 0,
         gold: 0,
@@ -10,11 +10,12 @@ define(['util/util'], function(util){
         inventory: [],
         leftHand: false,
         rightHand: false,
-        inventoryMaxSize: 5
+        inventoryMaxSize: 5,
+        io: null
     }
 
     function getPlayerIcon() {
-        return player.playerChar;
+        return player.icon;
     };
 
     function getInventoryMaxSize() {
@@ -115,6 +116,39 @@ define(['util/util'], function(util){
         return player.gold;
     };
 
+    function init(io) {
+        player.io = io;
+
+        io.on('player-moved', function(data){
+            if(data.icon === player.icon) {
+                console.log('player moved message received by player');
+                setPosition(data.x, data.y);
+            }
+        });
+
+        io.on('player-item', function(data) {
+            if (data.icon === player.icon) {
+                if (data.gold) {
+                    incrementGold(data.gold);
+                }
+
+                if (data.item) {
+                    addItem(data.item);
+                }
+
+                if (data.key) {
+                    addKey();
+                }
+            }
+        });
+
+        io.on('player-name', function(data){
+            if (data.icon === player.icon) {
+                setName(data.name);
+            }
+        });
+    };
+
     return {
         setName: setName,
         getName: getName,
@@ -133,6 +167,7 @@ define(['util/util'], function(util){
         addKey: addKey,
         hasKey: hasKey,
         useKey: useKey,
-        keyCount: keyCount
+        keyCount: keyCount,
+        init: init
     };
 });
