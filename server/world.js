@@ -38,8 +38,14 @@ World.prototype.addPerson = function(username,socket) {
 
   user.username = username;
   user.socket = socket;
+  user.currentRoom = '1';
+
+  // generate a random letter for the player
+  var n = Math.floor(Math.random()*26);
+  user.icon = String.fromCharCode(n + 65);
 
   this.userList.push(user);
+  return user;
 };
 
 World.prototype.removePerson = function(username) {

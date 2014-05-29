@@ -18,6 +18,10 @@ function HTTPServer(world) {
   this.http.use(express.cookieParser());
   this.http.use(express.session({secret: 'asdfasfiASFJIE2341djFIDei319#'}));
 
+  // TODO: handoff the socket.io instnace, see the comment in socketHandlers.js
+  // for why we don't want to leave it like this
+  socketHandlers.init(this.io);
+
   require("./routes")(this.http); // configure routes
 }
 

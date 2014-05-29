@@ -1,5 +1,17 @@
 var log = require("./logging");
 var theWorld = require("./world");
+var io = require('socket.io');
+
+// TODO: we need a reference to the socket.io object created in the
+// HTTPServer class since that's the live socket.io instance that everything
+// is routed through, for now we'll have the HTTPServer pass this instance off
+// so we can use it internally, but ultimately we should have the ownership
+// and management of that instance a little bit clearer
+var globalIO = null;
+
+exports.init = function(socketIO) {
+  globalIO = socketIO;
+}
 
 function removePlayer(username) {
 
@@ -24,7 +36,12 @@ function updateMap(socket) {
 
 function movePlayer(socket,moveData) {
 
-  socket.emit('player-moved', moveData);
+  // update everybody in this room that a player has moved
+  socket.get('username', function(err, user) {
+    globalIO.sockets.in(user.currentRoom).emit('player-moved', moveData);
+  });
+
+
 }
 
 exports.mapIncomingClient = function(client) {
@@ -38,8 +55,8 @@ exports.mapIncomingClient = function(client) {
 
     // TODO: actually validate password
     if(data.password === 'letmein') {
-      theWorld.addPerson(data.username,client);
-      client.set('username',data.username);
+      var user = theWorld.addPerson(data.username,client);
+      client.set('username',user);
 
       fn('success');
 
@@ -51,8 +68,12 @@ exports.mapIncomingClient = function(client) {
       // hard coded location
       initialLocation.x = 1;
       initialLocation.y = 1;
-      initialLocation.icon = 'P';
+      initialLocation.icon = user.icon;
 
+      // join the client to the current room for notifications
+      client.join(user.currentRoom);
+
+      // UPDATE INITIAL STATE ON CLIENT
       updateMap(client);
       movePlayer(client,initialLocation);
     }else {
@@ -65,7 +86,12 @@ exports.mapIncomingClient = function(client) {
   client.on('move-player', function(data) {
     log.verbose('socketHandlers','room move received');
 
-    movePlayer(client,data);
+    client.get('username', function(err, user) {
+
+      data.icon = user.icon;
+
+      movePlayer(client,data);
+    });
   });
 
   // now that we're actually tracking this person as being "logged in" we need
@@ -74,15 +100,15 @@ exports.mapIncomingClient = function(client) {
 
     log.verbose('socketHandlers', 'client disconnected');
 
-    client.get('username', function(err, username) {
+    client.get('username', function(err, user) {
 
 
-      if(username === null)
+      if(user.username === null)
       {
         return;
       }
 
-      theWorld.removePerson(username);
+      theWorld.removePerson(user.username);
     });
   });
 };
