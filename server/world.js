@@ -44,6 +44,12 @@ World.prototype.addPerson = function(username,socket) {
 
 World.prototype.removePerson = function(username) {
 
+  // we aren't tracking this user anymore, remove him
+  for(var i = 0; i <= this.userList.length - 1; i++) {
+    if(this.userList[i].username === username) {
+      this.userList.splice(i, 1);
+    }
+  }
 };
 
 

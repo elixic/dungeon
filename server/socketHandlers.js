@@ -47,6 +47,8 @@ exports.mapIncomingClient = function(client) {
       // location
       var initialLocation = {};
 
+      // TODO: this should be a serialed value, for now, force to start in a
+      // hard coded location
       initialLocation.x = 1;
       initialLocation.y = 1;
       initialLocation.icon = 'P';
@@ -80,7 +82,7 @@ exports.mapIncomingClient = function(client) {
         return;
       }
 
-      //theWorld.removePerson(username);
+      theWorld.removePerson(username);
     });
   });
 };
