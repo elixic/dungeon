@@ -19,7 +19,7 @@ require.config({
     }
 });
 
-require(['socketio', 'dungeon/dungeon', 'amplify'], function(io, dungeon) {
+require(['socketio', 'dungeon/dungeon'], function(io, dungeon) {
     var io = io.connect('http://localhost:8888');
     dungeon.init(io);
 });

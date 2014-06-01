@@ -110,6 +110,13 @@ define(['jquery', 'util/util', 'amplify'], function($, util, amplify) {
         io.on('player-moved', function(data) {
             publishMapDirtyMessage(data.icon, data.x, data.y);
         });
+
+        io.on('update-map', function(data) {
+            map.data = data;
+            amplify.publish('map-dirty', {
+                map: mapObject
+            });
+        });
     };
 
     function movePlayer(useKey, playerIcon, x, y) {
