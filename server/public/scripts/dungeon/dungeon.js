@@ -148,13 +148,6 @@ define(['./map', './items', './player', 'amplify'], function(map, items, player,
         footer.innerHTML = "<span>Footer Inventory and Stuff</span>";
 
         document.onkeydown = keypress;
-
-        map.loadMap(0).done(function() {
-            map.movePlayer(false, player.getIcon(), 1, 1);
-            drawHeader(player, header);
-            drawFooter(player, footer);
-            drawDungeon(map.getCurrentMap(), dungeon);
-        });
     }
 
     return dungeonObject;

@@ -36,7 +36,6 @@ define(['jquery', 'util/util', 'amplify'], function($, util, amplify) {
             }],
         mapObject = {
             getCurrentMap: getCurrentMap,
-            loadMap: loadMapData,
             movePlayer: movePlayer,
             getTileAt: getTileAt,
             boundsCheck: boundsCheck,
@@ -85,15 +84,6 @@ define(['jquery', 'util/util', 'amplify'], function($, util, amplify) {
         return item;
     };
 
-    function loadMapData(level) {
-        return new Promise(function(resolve, fail) {
-            $.get('roomMap', {}).done(function(data) {
-                map.data = data;
-                resolve();
-            });
-        });
-    };
-
     function init(io) {
         var publishMapDirtyMessage = function(icon, x, y) {
             var item = lookForItem(x,y);
@@ -112,7 +102,9 @@ define(['jquery', 'util/util', 'amplify'], function($, util, amplify) {
         });
 
         io.on('update-map', function(data) {
-            map.data = data;
+            var jData = JSON.parse(data);
+            console.log(jData);
+            map.data = jData;
             amplify.publish('map-dirty', {
                 map: mapObject
             });
