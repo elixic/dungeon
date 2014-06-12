@@ -38,7 +38,7 @@ HTTPServer.prototype.startServer = function() {
   });
 
 
-  this.legacyServer.listen(8888, function() {
+  this.legacyServer.listen(80, function() {
     log.info("http","Server is listening...");
   });
 };
